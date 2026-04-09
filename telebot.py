@@ -169,7 +169,9 @@ async def get_phone(message: Message, state: FSMContext):
         reply_markup=confirm_keyboard
     )
     await state.set_state(Form.confirm)
-
+@dp.message(Form.phone)
+async def phone_not_contact(message: Message):
+    await message.answer("Пожалуйста, используйте кнопку для отправки номера")
 @dp.message(Form.confirm, F.text == "✅ Подтвердить")
 async def confirm_yes(message: Message, state: FSMContext):
     data = await state.get_data()
@@ -203,9 +205,9 @@ async def start_handler(message: Message):
         "Привет! Нажми кнопку, чтобы оставить заявку",
         reply_markup=keyboard
     )
-@dp.message(F.text == "/applications")
+@dp.message(Command("applications"))
 async def show_apps(message: Message):
-    if str(message.from_user.id) != ADMIN_ID:
+    if message.from_user.id != ADMIN_ID:
         await message.answer('Введите корректную команду')
         return
 
